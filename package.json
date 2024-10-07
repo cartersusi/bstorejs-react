@@ -1,0 +1,54 @@
+{
+    "name": "bstorejs-react",
+    "description": "API Interface for Bstore, a simple blob store.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        "require": "./dist/index.js",
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cartersusi/bstorejs-react",
+        "directory": ""
+    },
+    "files": [
+        "src",
+        "dist"
+    ],
+    "scripts": {
+        "build:bstore": "tsc -p tsconfig.json",
+        "build": "npm run build:bstore",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "bstore",
+        "blob",
+        "store",
+        "react"
+    ],
+    "author": "Carter Susi",
+    "license": "MIT",
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "@types/react": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@types/node": "^22.7.4",
+        "typescript": "^5.6.2"
+    },
+    "dependencies": {
+        "@types/react": "^18.3.11",
+        "node": "^20.18.0",
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "version": "1.0.0"
+}
