@@ -43,12 +43,13 @@
         }
     },
     "devDependencies": {
-        "@types/node": "^22.7.5",
+        "@types/node": "^22.7.4",
         "typescript": "^5.6.2"
     },
     "dependencies": {
         "@types/react": "^18.3.11",
         "node": "^20.18.0",
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
-    }
+    },
+
 }

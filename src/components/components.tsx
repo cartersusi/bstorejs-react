@@ -11,11 +11,8 @@ function useBstoreSource(path: string) {
     } else if (BstoreHost) {
       setSource(`${BstoreHost}/bstore/${path}`);
     } else {
-      console.error('No Bstore host found');
       setIsError(true);
     }
-    console.log('path', path);
-    console.log('source', source);
   }, [path, source]);
 
   return { source, isError };

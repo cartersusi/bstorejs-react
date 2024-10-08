@@ -24,7 +24,6 @@ export async function get(path: string, access: 'public' | 'private'): Promise<B
       path: path, 
       access: access 
   });
-  console.log(res);
 
   const file_name = res.file_name;
   const file_type = res.file_type;

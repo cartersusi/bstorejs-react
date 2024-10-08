@@ -12,7 +12,6 @@ export async function get(path, access) {
         path: path,
         access: access
     });
-    console.log(res);
     const file_name = res.file_name;
     const file_type = res.file_type;
     const file_data = res.file_data;

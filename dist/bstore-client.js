@@ -35,13 +35,10 @@ export async function Put(path, file, access) {
 }
 export async function Get(path, access) {
     const res = await get(path, access);
-    console.log(res);
     const file_type = res.file_type;
     const file_name = res.file_name;
     const file_data = res.file_data;
     if (file_type == '' || file_name == '' || file_data == '' || !file_type || !file_name || !file_data) {
-        console.log(file_name);
-        console.log(file_type);
         return {
             status: 400,
             message: 'No file provided Client',
