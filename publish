@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# Reset
+Color_Off=''
+
+# Regular Colors
+Red=''
+Green=''
+Dim='' # White
+
+# Bold
+Bold_White=''
+Bold_Green=''
+
+if [[ -t 1 ]]; then
+    # Reset
+    Color_Off='\033[0m' # Text Reset
+
+    # Regular Colors
+    Red='\033[0;31m'   # Red
+    Green='\033[0;32m' # Green
+    Dim='\033[0;2m'    # White
+
+    # Bold
+    Bold_Green='\033[1;32m' # Bold Green
+    Bold_White='\033[1m'    # Bold White
+fi
+
+error() {
+    echo -e "${Red}error${Color_Off}:" "$@" >&2
+    exit 1
+}
+
+warning() {
+    echo -e "${Red}warning${Color_Off}:" "$@" >&2
+}
+
+info() {
+    echo -e "${Dim}$@ ${Color_Off}"
+}
+
+info_bold() {
+    echo -e "${Bold_White}$@ ${Color_Off}"
+}
+
+success() {
+    echo -e "${Green}$@ ${Color_Off}"
+}
+
+update_minor_version() {
+    local file="$1"
+    if [[ ! -f "$file" ]]; then
+        error "Error: File $file does not exist."
+        return 1
+    fi
+
+    local current_version=$(jq -r '.version' "$file")
+    if [[ -z "$current_version" ]]; then
+        error "Error: Unable to extract version from $file."
+        return 1
+    fi
+
+    IFS='.' read -r major minor patch <<< "$current_version"
+    patch=$((patch + 1))
+
+    local new_version="$major.$minor.$patch"
+    jq ".version = \"$new_version\"" "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+
+    info "Updated version from $current_version to $new_version"
+}
+
+build_and_check() {
+    info_bold "Building..."
+    if bun run build; then
+        success "Build completed successfully."
+    else
+        error "Build failed. Please check the build output for errors."
+    fi
+}
+
+update_minor_version package.json
+success "Publishing new version..."
+
+build_and_check
+
+if [[ -n $(git status -s) ]]; then
+    warning "There are uncommitted changes in the repository."
+    read -p "Do you want to continue? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        error "Publishing aborted."
+    fi
+fi
+
+if git add .; then
+    success "Added all changes to the staging area."
+else
+    error "Failed to add changes to the staging area."
+fi
+
+if git commit -m "auto update"; then
+    success "Committed changes."
+else
+    error "Failed to commit changes."
+fi
+
+if git push; then
+    success "Pushed changes to the repository."
+else
+    error "Failed to push changes to the repository."
+fi
+
+info_bold "Publishing to npm..."
+npm publish
