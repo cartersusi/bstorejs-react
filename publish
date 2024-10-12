@@ -80,6 +80,8 @@ build_and_check() {
 
 update_minor_version package.json
 success "Publishing new version..."
+npm install
+success "Installed dependencies."
 
 build_and_check
 
