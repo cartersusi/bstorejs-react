@@ -6,10 +6,19 @@ function useBstoreSource(path, useStream = false) {
     const [isError, setIsError] = useState(false);
     useEffect(() => {
         if (path.startsWith('http://') || path.startsWith('https://')) {
+            // path is hardcoded, not recommended for React Components
             setSource(path);
         }
         else if (BstoreHost) {
-            const endpoint = useStream ? 'stream' : 'bstore';
+            var endpoint = useStream ? 'stream' : 'bstore';
+            if (endpoint === 'stream') {
+                // only allow video files to be streamed, browser vtype support is users responsibility
+                const extension = path.split('.').pop();
+                const valid_extensions = ["video/mp4", "video/webm", "video/ogg", "video/wmv", "video/mov", "video/avchd", "video/av1"];
+                if (!valid_extensions.includes(extension)) {
+                    endpoint = 'bstore';
+                }
+            }
             setSource(`${BstoreHost}/${endpoint}/${path}`);
         }
         else {
