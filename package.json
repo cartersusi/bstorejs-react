@@ -1,6 +1,6 @@
 {
   "name": "bstorejs-react",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "API Interface for Bstore, a simple blob store.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -47,6 +47,8 @@
   },
   "dependencies": {
     "@types/react": "^18.3.11",
+    "dashjs": "^4.7.4",
+    "hls.js": "^1.5.16",
     "node": "^20.18.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   }
