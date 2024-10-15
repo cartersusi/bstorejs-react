@@ -13,7 +13,6 @@ export declare const BstoreVideo: {
 export type BstoreVideoProps = {
     path: string;
 } & Omit<React.ComponentProps<typeof VideoPlayer>, 'src'>;
-export default BstoreVideo;
 type BstoreProps<T> = Omit<T, 'src'> & {
     path: string;
 };
@@ -38,3 +37,4 @@ export declare const BstoreApplication: {
 export type BstoreImageProps = BstoreProps<React.ImgHTMLAttributes<HTMLImageElement>>;
 export type BstoreIFrameProps = BstoreProps<React.IframeHTMLAttributes<HTMLIFrameElement>>;
 export type BstoreApplicationProps = BstoreProps<React.EmbedHTMLAttributes<HTMLEmbedElement>>;
+export {};
