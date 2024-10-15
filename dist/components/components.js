@@ -5,6 +5,9 @@ import { BstoreHost } from '../bstore-client';
 const VideoPlayer = ({ src, ...props }) => {
     const videoRef = useRef(null);
     const [isClient, setIsClient] = useState(false);
+    const [dashUrl, setDashUrl] = useState('');
+    const [hlsUrl, setHlsUrl] = useState('');
+    const [mp4Url, setMp4Url] = useState('');
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -21,9 +24,9 @@ const VideoPlayer = ({ src, ...props }) => {
             if (ext) {
                 dirname = src.slice(0, -ext.length - 1);
             }
-            const dashUrl = `${dirname}/index.mpd`;
-            const hlsUrl = `${dirname}/index.m3u8`;
-            const mp4Url = src;
+            setDashUrl(`${dirname}/index.mpd`);
+            setHlsUrl(`${dirname}/index.m3u8`);
+            setMp4Url(mp4Url);
             try {
                 const Hls = (await import('hls.js')).default;
                 const dashjs = (await import('dashjs')).default;
@@ -49,8 +52,8 @@ const VideoPlayer = ({ src, ...props }) => {
             }
         };
         loadPlayer();
-    }, [src, isClient]);
-    return (_jsxs("video", { ref: videoRef, controls: true, style: { width: '100vw', height: 'auto', margin: 0, padding: 0 }, ...props, children: [_jsx("source", { src: `${src}/index.m3u8`, type: "application/x-mpegURL" }), _jsx("source", { src: `${src}/index.mpd`, type: "application/dash+xml" }), _jsx("source", { src: `${src}.mp4`, type: "video/mp4" })] }));
+    }, [src, isClient, dashUrl, hlsUrl, mp4Url]);
+    return (_jsxs("video", { ref: videoRef, controls: true, style: { width: '100vw', height: 'auto', margin: 0, padding: 0 }, ...props, children: [_jsx("source", { src: dashUrl, type: "application/x-mpegURL" }), _jsx("source", { src: hlsUrl, type: "application/dash+xml" }), _jsx("source", { src: mp4Url, type: "video/mp4" })] }));
 };
 function useBstoreSource(path) {
     const [source, setSource] = React.useState('');

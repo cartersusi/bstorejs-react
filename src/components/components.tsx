@@ -5,6 +5,9 @@ import { BstoreHost } from '../bstore-client';
 const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVideoElement>> = ({ src, ...props }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isClient, setIsClient] = useState(false);
+  const [dashUrl, setDashUrl] = useState('');
+  const [hlsUrl, setHlsUrl] = useState('');
+  const [mp4Url, setMp4Url] = useState('');
 
   useEffect(() => {
     setIsClient(true);
@@ -24,9 +27,9 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
         dirname = src.slice(0, -ext.length - 1);
       }
 
-      const dashUrl = `${dirname}/index.mpd`;
-      const hlsUrl = `${dirname}/index.m3u8`;
-      const mp4Url = src;
+      setDashUrl(`${dirname}/index.mpd`);
+      setHlsUrl(`${dirname}/index.m3u8`);
+      setMp4Url(mp4Url);
 
       try {
         const Hls = (await import('hls.js')).default;
@@ -51,7 +54,7 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
     };
 
     loadPlayer();
-  }, [src, isClient]);
+  }, [src, isClient, dashUrl, hlsUrl, mp4Url]);
 
   return (
     <video 
@@ -60,9 +63,9 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
       style={{ width: '100vw', height: 'auto', margin: 0, padding: 0 }}
       {...props}
     >
-      <source src={`${src}/index.m3u8`} type="application/x-mpegURL" />
-      <source src={`${src}/index.mpd`} type="application/dash+xml" />
-      <source src={`${src}.mp4`} type="video/mp4" />
+      <source src={dashUrl} type="application/x-mpegURL" />
+      <source src={hlsUrl} type="application/dash+xml" />
+      <source src={mp4Url} type="video/mp4" />
     </video>
   );
 };
