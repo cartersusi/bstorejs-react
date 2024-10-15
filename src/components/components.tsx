@@ -1,44 +1,68 @@
-import React, { useEffect, useRef } from 'react';
-import Hls from 'hls.js';
-import dashjs from 'dashjs';
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
 import { BstoreHost } from '../bstore-client';
+
+const isBrowser = typeof window !== 'undefined';
+let BstoreHostValue: string | undefined;
+if (isBrowser) {
+  BstoreHostValue = BstoreHost;
+}
 
 const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVideoElement>> = ({ src, ...props }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !src) return;
+    setIsClient(true);
+  }, []);
 
-    // trim ext suffix from src
-    var dirname = "";
-    const ext = src.split('.').pop();
-    if (ext) {
-      dirname = src.slice(0, -ext.length - 1);
-    }
+  useEffect(() => {
+    if (!isClient || !videoRef.current || !src) return;
 
-    const dashUrl = `${dirname}/index.mpd`;
-    const hlsUrl = `${dirname}/index.m3u8`;
-    const mp4Url = src;
+    const loadPlayer = async () => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(hlsUrl);
-      hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = hlsUrl;
-    } else if (dashjs.supportsMediaSource()) {
-      const player = dashjs.MediaPlayer().create();
-      player.initialize(video, dashUrl, true);
-    } else {
-      video.src = mp4Url;
-    }
-  }, [src]);
+      // trim ext suffix from src
+      var dirname = "";
+      const ext = src.split('.').pop();
+      if (ext) {
+        dirname = src.slice(0, -ext.length - 1);
+      }
+
+      const dashUrl = `${dirname}/index.mpd`;
+      const hlsUrl = `${dirname}/index.m3u8`;
+      const mp4Url = src;
+
+      try {
+        const Hls = (await import('hls.js')).default;
+        const dashjs = (await import('dashjs')).default;
+
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(hlsUrl);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = hlsUrl;
+        } else if (dashjs.supportsMediaSource()) {
+          const player = dashjs.MediaPlayer().create();
+          player.initialize(video, dashUrl, true);
+        } else {
+          video.src = mp4Url;
+        }
+      } catch (error) {
+        console.error('Error loading video libraries:', error);
+        video.src = mp4Url;
+      }
+    };
+
+    loadPlayer();
+  }, [src, isClient]);
 
   return (
     <video 
       ref={videoRef}
-      controls 
+      controls
       style={{ width: '100vw', height: 'auto', margin: 0, padding: 0 }}
       {...props}
     >
@@ -54,12 +78,14 @@ function useBstoreSource(path: string) {
   const [isError, setIsError] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      setSource(path);
-    } else if (BstoreHost) {
-      setSource(`${BstoreHost}/bstore/${path}`);
-    } else {
-      setIsError(true);
+    if (isBrowser) {
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+        setSource(path);
+      } else if (BstoreHost) {
+        setSource(`${BstoreHost}/bstore/${path}`);
+      } else {
+        setIsError(true);
+      }
     }
   }, [path]);
 
@@ -72,6 +98,15 @@ function withBstore<C extends object>(
 ) {
   const BstoreComponent = ({ path, ...rest }: { path: string } & Omit<C, 'src'>) => {
     const { source, isError } = useBstoreSource(path);
+    const [isClient, setIsClient] = React.useState(false);
+
+    React.useEffect(() => {
+      setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+      return null; // or a loading placeholder
+    }
 
     if (isError) {
       return <div>{`Failed to load ${displayName}`}</div>;

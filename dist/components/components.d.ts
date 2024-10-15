@@ -7,7 +7,7 @@ export declare const BstoreVideo: {
         path: string;
     } & Omit<{
         src: string;
-    } & React.VideoHTMLAttributes<HTMLVideoElement>, "src">): import("react/jsx-runtime").JSX.Element;
+    } & React.VideoHTMLAttributes<HTMLVideoElement>, "src">): import("react/jsx-runtime").JSX.Element | null;
     displayName: string;
 };
 export type BstoreVideoProps = {
@@ -20,19 +20,19 @@ type BstoreProps<T> = Omit<T, 'src'> & {
 export declare const BstoreImage: {
     ({ path, ...rest }: {
         path: string;
-    } & Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">): import("react/jsx-runtime").JSX.Element;
+    } & Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">): import("react/jsx-runtime").JSX.Element | null;
     displayName: string;
 };
 export declare const BstoreIFrame: {
     ({ path, ...rest }: {
         path: string;
-    } & Omit<React.IframeHTMLAttributes<HTMLIFrameElement>, "src">): import("react/jsx-runtime").JSX.Element;
+    } & Omit<React.IframeHTMLAttributes<HTMLIFrameElement>, "src">): import("react/jsx-runtime").JSX.Element | null;
     displayName: string;
 };
 export declare const BstoreApplication: {
     ({ path, ...rest }: {
         path: string;
-    } & Omit<React.EmbedHTMLAttributes<HTMLEmbedElement>, "src">): import("react/jsx-runtime").JSX.Element;
+    } & Omit<React.EmbedHTMLAttributes<HTMLEmbedElement>, "src">): import("react/jsx-runtime").JSX.Element | null;
     displayName: string;
 };
 export type BstoreImageProps = BstoreProps<React.ImgHTMLAttributes<HTMLImageElement>>;
