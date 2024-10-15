@@ -57,7 +57,7 @@ async function base64ToFile(base64String: string, fileName: string, mimeType: st
     
     const blob = new Blob([bytes], { type: mimeType });
     return new File([blob], fileName, { type: mimeType });
-  }
+}
   
 export async function Put(path: string, file: File, access: 'public' | 'private'): Promise<BstorePutResponse> {
     const file_name = file.name;

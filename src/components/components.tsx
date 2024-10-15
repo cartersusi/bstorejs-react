@@ -2,12 +2,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BstoreHost } from '../bstore-client';
 
+//const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVideoElement>> = ({ src, ...props }) => {
 const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVideoElement>> = ({ src, ...props }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [dashUrl, setDashUrl] = useState('');
   const [hlsUrl, setHlsUrl] = useState('');
   const [mp4Url, setMp4Url] = useState('');
+  const [posterUrl, setPosterUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setIsClient(true);
@@ -20,7 +22,6 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
       const video = videoRef.current;
       if (!video) return;
 
-      // trim ext suffix from src
       var dirname = "";
       const ext = src.split('.').pop();
       if (ext) {
@@ -30,6 +31,14 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
       setDashUrl(`${dirname}/index.mpd`);
       setHlsUrl(`${dirname}/index.m3u8`);
       setMp4Url(mp4Url);
+
+      if (props.poster) {
+        if (props.poster.startsWith('http://') || props.poster.startsWith('https://')) {
+          setPosterUrl(props.poster);
+        } else if (BstoreHost) {
+          setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+        }
+      }
 
       try {
         const Hls = (await import('hls.js')).default;
@@ -52,6 +61,12 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
         video.src = mp4Url;
       }
     };
+    console.log("loadPlayer");
+    console.log(isClient);
+    console.log(dashUrl);
+    console.log(hlsUrl);
+    console.log(mp4Url);
+    console.log(posterUrl);
 
     loadPlayer();
   }, [src, isClient, dashUrl, hlsUrl, mp4Url]);
@@ -60,7 +75,7 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
     <video 
       ref={videoRef}
       controls
-      style={{ width: '100vw', height: 'auto', margin: 0, padding: 0 }}
+      poster={posterUrl}
       {...props}
     >
       <source src={dashUrl} type="application/x-mpegURL" />
@@ -125,8 +140,6 @@ export const BstoreVideo = withBstore<React.ComponentProps<typeof VideoPlayer>>(
 export type BstoreVideoProps = {
   path: string;
 } & Omit<React.ComponentProps<typeof VideoPlayer>, 'src'>;
-
-export default BstoreVideo;
 
 type BstoreProps<T> = Omit<T, 'src'> & { path: string };
 
