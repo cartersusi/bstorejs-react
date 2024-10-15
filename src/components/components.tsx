@@ -2,12 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BstoreHost } from '../bstore-client';
 
-const isBrowser = typeof window !== 'undefined';
-let BstoreHostValue: string | undefined;
-if (isBrowser) {
-  BstoreHostValue = BstoreHost;
-}
-
 const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVideoElement>> = ({ src, ...props }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isClient, setIsClient] = useState(false);
@@ -78,6 +72,7 @@ function useBstoreSource(path: string) {
   const [isError, setIsError] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    const isBrowser = typeof window !== 'undefined';
     if (isBrowser) {
       if (path.startsWith('http://') || path.startsWith('https://')) {
         setSource(path);

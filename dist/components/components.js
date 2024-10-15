@@ -2,11 +2,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useEffect, useRef, useState } from 'react';
 import { BstoreHost } from '../bstore-client';
-const isBrowser = typeof window !== 'undefined';
-let BstoreHostValue;
-if (isBrowser) {
-    BstoreHostValue = BstoreHost;
-}
 const VideoPlayer = ({ src, ...props }) => {
     const videoRef = useRef(null);
     const [isClient, setIsClient] = useState(false);
@@ -61,6 +56,7 @@ function useBstoreSource(path) {
     const [source, setSource] = React.useState('');
     const [isError, setIsError] = React.useState(false);
     React.useEffect(() => {
+        const isBrowser = typeof window !== 'undefined';
         if (isBrowser) {
             if (path.startsWith('http://') || path.startsWith('https://')) {
                 setSource(path);
