@@ -36,6 +36,12 @@ const VideoPlayer = ({ src, ...props }) => {
                     setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
                 }
             }
+            else if (BstoreHost) {
+                setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+            }
+            else {
+                setPosterUrl(undefined);
+            }
             try {
                 const Hls = (await import('hls.js')).default;
                 const dashjs = (await import('dashjs')).default;
