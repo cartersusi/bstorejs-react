@@ -1,6 +1,6 @@
 {
   "name": "bstorejs-react",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "API Interface for Bstore, a simple blob store.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

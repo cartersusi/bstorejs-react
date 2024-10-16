@@ -33,11 +33,11 @@ const VideoPlayer = ({ src, ...props }) => {
                     setPosterUrl(props.poster);
                 }
                 else if (BstoreHost) {
-                    setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+                    setPosterUrl(`${dirname}/index.jpg`);
                 }
             }
             else if (BstoreHost) {
-                setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+                setPosterUrl(`${dirname}/index.jpg`);
             }
             else {
                 setPosterUrl(undefined);

@@ -36,10 +36,10 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
         if (props.poster.startsWith('http://') || props.poster.startsWith('https://')) {
           setPosterUrl(props.poster);
         } else if (BstoreHost) {
-          setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+          setPosterUrl(`${dirname}/index.jpg`);
         }
       } else if (BstoreHost) {
-        setPosterUrl(`${BstoreHost}/bstore/${dirname}/index.jpg`);
+        setPosterUrl(`${dirname}/index.jpg`);
       } else {
         setPosterUrl(undefined);
       }
