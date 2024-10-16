@@ -66,12 +66,6 @@ const VideoPlayer = ({ src, ...props }) => {
                 video.src = mp4Url;
             }
         };
-        console.log("loadPlayer");
-        console.log(isClient);
-        console.log(dashUrl);
-        console.log(hlsUrl);
-        console.log(mp4Url);
-        console.log(posterUrl);
         loadPlayer();
     }, [src, isClient, dashUrl, hlsUrl, mp4Url]);
     return (_jsxs("video", { ref: videoRef, controls: true, poster: posterUrl, ...props, children: [_jsx("source", { src: dashUrl, type: "application/x-mpegURL" }), _jsx("source", { src: hlsUrl, type: "application/dash+xml" }), _jsx("source", { src: mp4Url, type: "video/mp4" })] }));
@@ -103,7 +97,7 @@ function withBstore(WrappedComponent, displayName) {
             setIsClient(true);
         }, []);
         if (!isClient) {
-            return null; // or a loading placeholder
+            return null;
         }
         if (isError) {
             return _jsx("div", { children: `Failed to load ${displayName}` });

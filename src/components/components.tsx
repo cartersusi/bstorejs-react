@@ -65,12 +65,6 @@ const VideoPlayer: React.FC<{ src: string } & React.VideoHTMLAttributes<HTMLVide
         video.src = mp4Url;
       }
     };
-    console.log("loadPlayer");
-    console.log(isClient);
-    console.log(dashUrl);
-    console.log(hlsUrl);
-    console.log(mp4Url);
-    console.log(posterUrl);
 
     loadPlayer();
   }, [src, isClient, dashUrl, hlsUrl, mp4Url]);
@@ -122,7 +116,7 @@ function withBstore<C extends object>(
     }, []);
 
     if (!isClient) {
-      return null; // or a loading placeholder
+      return null;
     }
 
     if (isError) {
